@@ -17,6 +17,7 @@ app.get("/", function(req, res){
 
 app.get("/carros", async function(req, res)  {
     const status = req.query.c;
+    const carros = await CarroModel.find();
     res.render("carro/listagem", { carros, status });
 });
 
@@ -32,22 +33,23 @@ app.post("/carros", async function(req, res) {
         preco_diaria: carro.inp_preco_diaria
     });
     await novoCarro.save();
-    res.redirect("/");
+    res.redirect("/carros?c=1");
 });
 
 app.get("/carros/cadastrar", function(req,res){
     res.render("carro/cadastrar");
 });
 
-// app.get("/carros/:placa", async function(req, res) {
-//     const placa = req.params.placa;
-//     const carro = await CarroModel.findOne({ placa: placa });
-//     if (carro) {
-//         res.render("carro/detalhar", { carro });
-//     } else {
-//         res.status(404).send("Veículo não encontrado");
-//     }
-// });
+app.get("/carros/:placa", async function(req, res) {
+    const placa = req.params.placa;
+    const carro = await CarroModel.findOne({ placa: placa });
+    if (carro) {
+        res.render("carro/detalhar", { carro });
+    } else {
+        // res.status(404).send("Veículo não encontrado");
+        res.render("404");
+    }
+});
 
 app.listen("888", function(){
     console.log("Rodando");
